@@ -26,7 +26,6 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
     @Override
     public Mono<FlightSearchResponseDTO> searchFlights(FlightSearchRequestDTO request){
         // TODO: Improve performace by adding pagination or streaming responses.
-        System.out.println("I call searchFlights " + request.getDepartureCode());
 
         if (request.getReturnDate() != null && request.getReturnDate().isBefore(request.getDepartureDate())) {
             throw new IllegalArgumentException("Return date must not be before departure date.");
@@ -51,7 +50,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
             .onStatus(HttpStatusCode::is4xxClientError, response -> 
                 response.bodyToMono(String.class) // Capture the response body (error message)
                 .flatMap(body -> {
-                    System.out.println("I received a bad error 5xx");
+                    System.out.println("I received a bad error 4xx");
                     // Handle client error and return Mono.error with custom exception
                     return Mono.error(new ClientErrorException("Client error: " + body));
                 })
