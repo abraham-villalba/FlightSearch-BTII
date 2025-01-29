@@ -21,16 +21,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FlightSearchRequestDTO {
 
-    @NotNull
+    @NotNull(message = "Departure Code must not be null")
     @Size(min = 3, max = 3, message = "Departure code must be exactly 3 characters long. Eg: LAX")
     private String departureCode;
 
-    @NotNull
+    @NotNull(message = "Destination Code must not be null")
     @Size(min = 3, max = 3, message = "Destination code must be exactly 3 characters long. Eg: LAX")
     private String destinationCode;
 
     @NotNull(message = "Departure date must not be null")
-    @FutureOrPresent
+    @FutureOrPresent(message = "Departure date must not be in the past")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate departureDate;
     

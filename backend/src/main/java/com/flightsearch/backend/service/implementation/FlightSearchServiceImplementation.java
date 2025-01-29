@@ -1,5 +1,7 @@
 package com.flightsearch.backend.service.implementation;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,6 +23,13 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
     @Override
     public Mono<FlightSearchResponseDTO> searchFlights(FlightSearchRequestDTO request){
         System.out.println("I call searchFlights " + request.getDepartureCode());
+
+        if (request.getReturnDate() != null && request.getReturnDate().isBefore(request.getDepartureDate())) {
+            throw new IllegalArgumentException("Return date must not be before departure date.");
+        }
+        if (request.getDepartureDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Departure date must not be in the past.");
+        }
         
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
@@ -31,7 +40,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("returnDate", request.getReturnDate() != null ? request.getReturnDate() : null)
                 .queryParam("adults", request.getNumAdults())
                 .queryParam("nonStop", request.getNonStop())
-                .queryParam("max", 3)
+                .queryParam("max", 100)
                 .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
