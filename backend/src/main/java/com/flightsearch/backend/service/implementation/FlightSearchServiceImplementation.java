@@ -25,6 +25,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
 
     @Override
     public Mono<FlightSearchResponseDTO> searchFlights(FlightSearchRequestDTO request){
+        // TODO: Improve performace by adding pagination or streaming responses.
         System.out.println("I call searchFlights " + request.getDepartureCode());
 
         if (request.getReturnDate() != null && request.getReturnDate().isBefore(request.getDepartureDate())) {

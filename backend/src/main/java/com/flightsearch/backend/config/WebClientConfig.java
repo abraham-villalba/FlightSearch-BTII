@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryReactiveC
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
@@ -38,10 +39,19 @@ public class WebClientConfig {
         AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientManager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(clientRegistrations, clientService);
         ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
         oauth.setDefaultClientRegistrationId("amadeus");
+
+        // Increase the buffer size to 1MB
+        ExchangeStrategies strategies = ExchangeStrategies.builder()
+            .codecs(clientCodecConfigurer -> 
+                clientCodecConfigurer.defaultCodecs().maxInMemorySize(1 * 1024 * 1024) // 1MB
+            )
+            .build();
+        
         return WebClient
             .builder()
             .baseUrl("https://test.api.amadeus.com")
             .filter(oauth)
+            .exchangeStrategies(strategies)
             .build();
     }
     
