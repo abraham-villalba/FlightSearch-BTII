@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
+import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
 import com.flightsearch.backend.service.FlightSearchService;
 
 import reactor.core.publisher.Mono;
@@ -18,8 +19,8 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
     }
 
     @Override
-    public Mono<String> searchFlights(FlightSearchRequestDTO request){
-        System.out.println("I call searchFlights");
+    public Mono<FlightSearchResponseDTO> searchFlights(FlightSearchRequestDTO request){
+        System.out.println("I call searchFlights " + request.getDepartureCode());
         
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
@@ -34,7 +35,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
-            .bodyToMono(String.class)
+            .bodyToMono(FlightSearchResponseDTO.class)
             .doOnTerminate(() -> System.out.println("Response received"));
     }
 }

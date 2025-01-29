@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
+import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
 import com.flightsearch.backend.model.enums.Currency;
 import com.flightsearch.backend.service.FlightSearchService;
 
@@ -28,7 +29,7 @@ public class FlightSearchController {
     // TODO: CREATE DTO FOR THE RESPONSE AND SEND IT AS JSON
     //          ALSO WITH RESPONSE ENTITY
     @GetMapping("/search")
-    public Mono<String> searchFlights(
+    public Mono<FlightSearchResponseDTO> searchFlights(
         @RequestParam String departureCode,
         @RequestParam String destinationCode,
         @RequestParam String departureDate,
