@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // TODO: ADD TIMEOUT EXCEPTIONS FOR API CALLS
+    // TODO: VALIDATE POSSIBLE EXCEPTIONS FROM AMADEUS API
     @ExceptionHandler(Exception.class)
     @ResponseStatus()
     public Map<String,Object> handleGeneralException(Exception e) {

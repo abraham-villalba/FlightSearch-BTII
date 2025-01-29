@@ -31,6 +31,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("adults", request.getNumAdults())
                 .queryParam("nonStop", request.getNonStop())
                 .queryParam("max", 3)
+                .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
             .bodyToMono(String.class)

@@ -3,6 +3,7 @@ package com.flightsearch.backend.model.DTO;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.flightsearch.backend.model.enums.Currency;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -43,4 +44,7 @@ public class FlightSearchRequestDTO {
 
     @NotNull(message = "nonStop can't be null")
     private Boolean nonStop;
+
+    @NotNull(message = "currency can't be null")
+    private Currency currency;
 }
