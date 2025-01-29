@@ -1,0 +1,30 @@
+package com.flightsearch.backend.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.flightsearch.backend.model.DTO.AirlineResponseDTO;
+import com.flightsearch.backend.service.AirlineService;
+
+import reactor.core.publisher.Mono;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+@RestController
+@RequestMapping("/api/airlines")
+public class AirlineController {
+
+    @Autowired
+    private AirlineService airlineService;
+
+    @GetMapping("/details")
+    public ResponseEntity<Mono<AirlineResponseDTO>> getAirlineInformation(@RequestParam String aitaCodes) {
+        return new ResponseEntity<Mono<AirlineResponseDTO>>(airlineService.getAirlineInformation(aitaCodes), HttpStatus.OK);
+    }
+    
+}
