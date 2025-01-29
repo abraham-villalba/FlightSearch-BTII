@@ -2,9 +2,12 @@ package com.flightsearch.backend.service.implementation;
 
 import java.time.LocalDate;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.flightsearch.backend.exceptions.ClientErrorException;
+import com.flightsearch.backend.exceptions.ServerErrorException;
 import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
 import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
 import com.flightsearch.backend.service.FlightSearchService;
@@ -44,7 +47,18 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
-            .bodyToMono(FlightSearchResponseDTO.class)
-            .doOnTerminate(() -> System.out.println("Response received"));
+            .onStatus(HttpStatusCode::is4xxClientError, response -> 
+                response.bodyToMono(String.class) // Capture the response body (error message)
+                .flatMap(body -> {
+                    System.out.println("I received a bad error 5xx");
+                    // Handle client error and return Mono.error with custom exception
+                    return Mono.error(new ClientErrorException("Client error: " + body));
+                })
+            )
+            .onStatus(HttpStatusCode::is5xxServerError, response -> {
+                System.out.println("I received a bad error 5xx");
+                return Mono.error(new ServerErrorException("An error has occurred on the remote server..."));
+            })
+            .bodyToMono(FlightSearchResponseDTO.class);
     }
 }
