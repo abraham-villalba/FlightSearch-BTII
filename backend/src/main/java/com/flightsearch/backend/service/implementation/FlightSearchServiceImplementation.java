@@ -53,7 +53,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .build())
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response -> 
-                response.bodyToMono(String.class) // Capture the response body (error message)
+                response.bodyToMono(String.class) 
                 .flatMap(body -> {
                     System.out.println("I received a bad error 4xx");
                     // Handle client error and return Mono.error with custom exception
@@ -77,7 +77,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
 
     private void sortFlights(List<FlightOffer> flights, String[] sortByList) {
         if (flights == null || flights.isEmpty() || sortByList == null || sortByList.length == 0) {
-            return; // No sorting needed
+            return;
         }
 
         Comparator<FlightOffer> comparator = null;

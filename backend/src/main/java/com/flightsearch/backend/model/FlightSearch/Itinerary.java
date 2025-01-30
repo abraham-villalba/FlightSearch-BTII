@@ -2,6 +2,7 @@ package com.flightsearch.backend.model.FlightSearch;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,6 +23,7 @@ public class Itinerary {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private Duration totalLayoverDuration;
+    private List<Layover> layovers = new ArrayList<>();
 
     public void calculateItineraryDetails() {
         if (segments != null && !segments.isEmpty()) {
@@ -38,8 +40,10 @@ public class Itinerary {
                 System.out.println("Arrived at " + arrival);
                 System.out.println(" Departed at " + departure);
                 System.out.println("Layover Duration " + layoverDuration.toString());
+                layovers.add(new Layover(segments.get(i).getArrival().getIataCode(), layoverDuration));
                 totalLayover = totalLayover.plus(layoverDuration);
                 System.out.println("Total Itinerary Layover Duration " + totalLayover.toString());
+                System.out.println("===================");
             }
             this.totalLayoverDuration = totalLayover;
             System.out.println("Total Itinerary Layover Duration: " + totalLayoverDuration.toString());
