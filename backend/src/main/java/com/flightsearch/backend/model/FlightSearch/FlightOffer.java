@@ -18,4 +18,10 @@ public class FlightOffer {
     private PriceWithFees price;
     private List<TravelerPricings> travelerPricings;
 
+    public void processFlightsDetails() {
+        if (itineraries != null) {
+            itineraries.forEach(Itinerary::calculateItineraryDetails);
+        }
+    }
+
 }

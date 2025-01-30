@@ -48,7 +48,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("returnDate", request.getReturnDate() != null ? request.getReturnDate() : null)
                 .queryParam("adults", request.getNumAdults())
                 .queryParam("nonStop", request.getNonStop())
-                .queryParam("max", 100)
+                .queryParam("max", 1)
                 .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
@@ -70,6 +70,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                     String[] sortFields = request.getSortBy().split(",");
                     sortFlights(response.getData(), sortFields);
                 }
+                response.getData().forEach(FlightOffer::processFlightsDetails);
                 return response;
             });
     }
