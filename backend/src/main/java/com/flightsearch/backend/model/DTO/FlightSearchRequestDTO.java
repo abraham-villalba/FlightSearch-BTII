@@ -47,4 +47,7 @@ public class FlightSearchRequestDTO {
 
     @NotNull(message = "currency can't be null")
     private Currency currency;
+
+    @Nullable
+    private String sortBy;
 }

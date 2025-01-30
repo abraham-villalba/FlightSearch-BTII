@@ -1,6 +1,9 @@
 package com.flightsearch.backend.service.implementation;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,8 @@ import com.flightsearch.backend.exceptions.ClientErrorException;
 import com.flightsearch.backend.exceptions.ServerErrorException;
 import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
 import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
+import com.flightsearch.backend.model.FlightSearch.FlightOffer;
+import com.flightsearch.backend.model.FlightSearch.Itinerary;
 import com.flightsearch.backend.service.FlightSearchService;
 
 import reactor.core.publisher.Mono;
@@ -59,6 +64,50 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 System.out.println("I received a bad error 5xx");
                 return Mono.error(new ServerErrorException("An error has occurred on the remote server..."));
             })
-            .bodyToMono(FlightSearchResponseDTO.class);
+            .bodyToMono(FlightSearchResponseDTO.class)
+            .map(response -> {
+                if (request.getSortBy() != null) {
+                    String[] sortFields = request.getSortBy().split(",");
+                    sortFlights(response.getData(), sortFields);
+                }
+                return response;
+            });
+    }
+
+    private void sortFlights(List<FlightOffer> flights, String[] sortByList) {
+        if (flights == null || flights.isEmpty() || sortByList == null || sortByList.length == 0) {
+            return; // No sorting needed
+        }
+
+        Comparator<FlightOffer> comparator = null;
+        for (String sortBy : sortByList) {
+            String[] fieldAndOrder = sortBy.split(":");
+            if (fieldAndOrder.length != 2) {
+                throw new IllegalArgumentException("Invalid sort field: " + fieldAndOrder);
+            }
+            String field = fieldAndOrder[0].trim();
+            String order = fieldAndOrder[1].trim();
+
+            System.out.println("Ordering by: " + field + "\nOrder:" + order);
+
+            Comparator<FlightOffer> fieldComparator = switch (field.toLowerCase()) {
+                case "price" -> Comparator.comparing(flight -> flight.getPrice().getTotal());
+                case "duration" -> Comparator.comparing(FlightSearchServiceImplementation::getTotalDuration);
+                default -> throw new IllegalArgumentException("Invalid sorting parameters: (" + field + ',' + order + ')');
+            };
+            // Combine comparators
+            if ("desc".equalsIgnoreCase(order)) {
+                fieldComparator = fieldComparator.reversed();
+            }
+            comparator = (comparator == null) ? fieldComparator : comparator.thenComparing(fieldComparator);
+        }
+
+        flights.sort(comparator);
+    }
+
+    private static Duration getTotalDuration(FlightOffer flight) {
+        return flight.getItineraries().stream()
+            .map(Itinerary::getDuration)
+            .reduce(Duration.ZERO, Duration::plus);
     }
 }
