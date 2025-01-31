@@ -4,7 +4,12 @@ import { ChangeEvent, useState } from "react";
 import { SearchState } from "../types/searchParamsTypes";
 import { setSearchParams } from "../store/slices/searchParamsSlice";
 import { useNavigate } from "react-router-dom";
+import { getToday, stringToDate } from "../utils/dateUtils";
 
+type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'page'> & {
+    departureDate: string;
+    returnDate: string | null;
+}
 
 export default function FlightSearchForm() {
     
@@ -13,17 +18,53 @@ export default function FlightSearchForm() {
 
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<SearchState>({
+    const [formData, setFormData] = useState<FlightSearchFields>({
         departureCode: '',
         arrivalCode: '',
         departureDate: '',
+        returnDate: null,
         adults: 1,
         currency: 'USD',
-        nonStop: false,
-        page: 1
+        nonStop: false
     });
 
+    const validate = (): string | null => {
+        const { departureCode, arrivalCode, departureDate, returnDate, adults } = formData;
+    
+        // Validate Airport Codes
+        if (!departureCode || !arrivalCode || departureCode.length !== 3 || arrivalCode.length !== 3) {
+            return "Invalid Airport Code...";
+        }
+        if (departureCode === arrivalCode) {
+            return "Arrival Code and Departure Code must be different";
+        }
+    
+        // Validate Departure Date
+        if (!departureDate) return "Departure date is required...";
+        
+        const departure = stringToDate(departureDate);
+        if (departure < getToday()) return "Departure date cannot be in the past...";
+    
+        // Validate Return Date
+        if (returnDate) {
+            const returnD = stringToDate(returnDate);
+            if (returnD <= departure) return "Invalid return date...";
+        }
+    
+        // Validate Number of Adults
+        if (adults < 1 || adults > 9) {
+            return "The number of adults must be between 1 and 9";
+        }
+    
+        return null;
+    };
+
     const handleSubmit = () => {
+        const error = validate();
+        if (error) {
+            alert(error);
+            return;
+        }
         console.log("Data was submitted");
         // Validate fields of the form
         // Set the state of the search
@@ -34,10 +75,10 @@ export default function FlightSearchForm() {
     }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value} = e.target;
+        const {name, type, value, checked} = e.target as HTMLInputElement;
         setFormData((prevData) => ({
             ...prevData,
-            [name] : value
+            [name] : type === "checkbox" ? checked : value
         }));
     }
 
@@ -83,7 +124,7 @@ export default function FlightSearchForm() {
                         <input
                             name="returnDate"
                             type="date"
-                            value={formData.returnDate}
+                            value={formData.returnDate != null ? formData.returnDate : ''}
                             onChange={handleInputChange}
                             className="w-2/3 p-2 border border-gray-300 rounded"
                         />
