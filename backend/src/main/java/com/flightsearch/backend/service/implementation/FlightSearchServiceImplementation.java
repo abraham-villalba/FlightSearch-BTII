@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 public class FlightSearchServiceImplementation implements FlightSearchService{
 
     private final WebClient webClient;
+    private static final int PAGE_SIZE = 15;
 
     public FlightSearchServiceImplementation(WebClient webClient) {
         this.webClient = webClient;
@@ -30,14 +31,8 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
 
     @Override
     public Mono<FlightSearchResponseDTO> searchFlights(FlightSearchRequestDTO request){
-        // TODO: Improve performace by adding pagination or streaming responses.
 
-        if (request.getReturnDate() != null && request.getReturnDate().isBefore(request.getDepartureDate())) {
-            throw new IllegalArgumentException("Return date must not be before departure date.");
-        }
-        if (request.getDepartureDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Departure date must not be in the past.");
-        }
+        validateRequest(request);
         
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
@@ -48,7 +43,7 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 .queryParam("returnDate", request.getReturnDate() != null ? request.getReturnDate() : null)
                 .queryParam("adults", request.getNumAdults())
                 .queryParam("nonStop", request.getNonStop())
-                .queryParam("max", 1)
+                .queryParam("max", 100)
                 .queryParam("currencyCode", request.getCurrency().toString())
                 .build())
             .retrieve()
@@ -70,10 +65,21 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                     String[] sortFields = request.getSortBy().split(",");
                     sortFlights(response.getData(), sortFields);
                 }
+                paginateFlights(response, request.getPage());
                 response.getData().forEach(FlightOffer::processFlightsDetails);
                 return response;
             });
     }
+
+    private void validateRequest(FlightSearchRequestDTO request) {
+        if (request.getReturnDate() != null && request.getReturnDate().isBefore(request.getDepartureDate())) {
+            throw new IllegalArgumentException("Return date must not be before departure date.");
+        }
+        if (request.getDepartureDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Departure date must not be in the past.");
+        }
+
+    };
 
     private void sortFlights(List<FlightOffer> flights, String[] sortByList) {
         if (flights == null || flights.isEmpty() || sortByList == null || sortByList.length == 0) {
@@ -110,5 +116,21 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
         return flight.getItineraries().stream()
             .map(Itinerary::getDuration)
             .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    private void paginateFlights(FlightSearchResponseDTO response, int page) {
+        List<FlightOffer> flights = response.getData();
+        int fromIndex = (page - 1) * PAGE_SIZE;
+        int toIndex = Math.min(fromIndex + PAGE_SIZE, flights.size());
+        int totalPages = flights.size() / PAGE_SIZE;
+        response.getMeta().setCurrentPage(page);
+        response.getMeta().setTotalPages(flights.size() % PAGE_SIZE != 0 ? totalPages + 1 : totalPages);
+
+        if (fromIndex >= flights.size()) {
+            response.setData(List.of()); // Return empty list if page is out of bounds
+        } else {
+            response.setData(flights.subList(fromIndex, toIndex));
+        }
+        response.getMeta().setCurrentPayloadCount(response.getData().size());
     }
 }

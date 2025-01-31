@@ -8,6 +8,7 @@ import com.flightsearch.backend.model.enums.Currency;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -50,4 +51,7 @@ public class FlightSearchRequestDTO {
 
     @Nullable
     private String sortBy;
+
+    @Min(value=1, message = "Page number must be greater or equal than 1")
+    private Integer page;
 }

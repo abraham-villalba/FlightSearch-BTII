@@ -11,4 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Metadata {
     private Integer count;
+    private Integer totalPages;
+    private Integer currentPage;
+    private Integer currentPayloadCount;
 }
