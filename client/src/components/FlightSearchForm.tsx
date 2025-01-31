@@ -42,63 +42,97 @@ export default function FlightSearchForm() {
     }
 
     return (
-        <div>
-            <h3>Flight Search Form</h3>
-            <form onSubmit={(e) => e.preventDefault()}>
-                <div>
-                    <label>Departure Code</label>
-                    <input
-                    name="departureCode"
-                    type="text"
-                    value={formData.departureCode ? formData.departureCode : ""}
-                    onChange={handleInputChange}
-                    />
-                </div>
-                <div className="flex">
-                    <label>Destination Code</label>
-                    <input
-                    name="arrivalCode"
-                    type="text"
-                    value={formData.arrivalCode ? formData.arrivalCode : ""}
-                    onChange={handleInputChange}
-                    />
-                </div>
-                <div className="flex">
-                    <label>Departure Date</label>
-                    <input
-                    name="departureDate"
-                    type="text"
-                    value={formData.departureDate ? formData.departureDate : ""}
-                    onChange={handleInputChange}
-                    />
-                </div>
-                <div className="flex">
-                    <label>Return Date</label>
-                    <input
-                    name="returnDate"
-                    type="text"
-                    value={formData.returnDate ? formData.returnDate : ""}
-                    onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <div>
-                        <div>
-                            <label>Currency</label>
-                            <select
-                                name="currency"
-                                value={formData.currency}
-                                onChange={handleInputChange}
-                                >
-                                <option value="USD">USD</option>
-                                <option value="MXN">MXN</option>
-                                <option value="EUR">EUR</option>
-                            </select>
+        <div className="bg-white rounded-lg shadow-md border border-gray-300 w-full p-12 space-y-4 max-w-screen-sm">
+            <form 
+                onSubmit={(e) => e.preventDefault()}
+                className="max-w-lg mx-auto mt-10"
+            >
+                <div className="flex flex-col space-y-2">
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Departure Code</label>
+                        <input
+                            name="departureCode"
+                            type="text"
+                            value={formData.departureCode}
+                            onChange={handleInputChange}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Arrival Code</label>
+                        <input
+                            name="arrivalCode"
+                            type="text"
+                            value={formData.arrivalCode}
+                            onChange={handleInputChange}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Departure Date</label>
+                        <input
+                            name="departureDate"
+                            type="date"
+                            value={formData.departureDate}
+                            onChange={handleInputChange}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Return Date</label>
+                        <input
+                            name="returnDate"
+                            type="date"
+                            value={formData.returnDate}
+                            onChange={handleInputChange}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Currency</label>
+                        <select
+                            name="currency"
+                            value={formData.currency}
+                            onChange={handleInputChange}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        >
+                            <option value="USD">USD</option>
+                            <option value="MXN">MXN</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div className="flex items-center justify-between space-x-3">
+                        <label className="text-right w-1/3">Number of Adults</label>
+                        <input
+                            name="adults"
+                            type="number"
+                            value={formData.adults}
+                            onChange={handleInputChange}
+                            max={9}
+                            min={1}
+                            className="w-2/3 p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <div className="w-1/3"></div> {/* Empty div to align checkbox with other inputs */}
+                        <div className="w-2/3 flex items-center space-x-2">
+                            <input
+                                name="nonStop"
+                                type="checkbox"
+                                checked={formData.nonStop}
+                                onChange={(e) => handleInputChange(e)}
+                                className="form-checkbox h-5 w-5 text-blue-600"
+                            />
+                            <label className="ml-2">Non-stop</label>
                         </div>
                     </div>
-                    
-                    <div>
-                        <button onClick={handleSubmit} className="px-4 py-2 bg-green-900 hover:bg-green-700 text-white rounded">Search</button>
+                    <div className="flex justify-end">
+                        <button
+                            onClick={handleSubmit}
+                            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-500"
+                        >
+                            Search
+                        </button>
                     </div>
                 </div>
             </form>
