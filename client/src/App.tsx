@@ -1,10 +1,18 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import FlightSearchPage from "./pages/FlightSearchPage"
+import FlightResultsPage from "./pages/FlightResultsPage"
+import FlightDetailsPage from "./pages/FlightDetailsPage"
 
 function App() {
 
   return (
-    <>
-      <h1 className="text-3xl font-bold">Fligth Search App</h1>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<FlightSearchPage />}></Route>
+        <Route path="/results" element={<FlightResultsPage />}></Route>
+        <Route path="/results/details" element={<FlightDetailsPage />}></Route>
+      </Routes>
+    </Router>
   )
 }
 
