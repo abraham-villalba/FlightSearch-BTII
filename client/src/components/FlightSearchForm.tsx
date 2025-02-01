@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../store/store";
-import { ChangeEvent, useState } from "react";
-import { SearchState } from "../types/searchParamsTypes";
+import { AppDispatch, RootState } from "../store/store";
+import { ChangeEvent, useEffect, useState } from "react";
+import { SearchFlightsRequest, SearchState } from "../types/searchParamsTypes";
 import { setSearchParams } from "../store/slices/searchParamsSlice";
 import { useNavigate } from "react-router-dom";
 import { getToday, stringToDate } from "../utils/dateUtils";
 import AirportSearch from "./AirportSearch";
 import { Airport } from "../types/airportTypes";
+import { fetchFlightOffers } from "../store/slices/flightsSlice";
+import LoadingSpinner from "./LoadingSpinner";
 
 type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'page'> & {
     departureDate: string;
@@ -15,8 +17,9 @@ type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'pa
 
 export default function FlightSearchForm() {
     
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const searchParams = useSelector((state: RootState) => state.searchParams);
+    const { meta, loading, error } = useSelector((state: RootState) => state.flights);
 
     const navigate = useNavigate();
 
@@ -68,13 +71,29 @@ export default function FlightSearchForm() {
             return;
         }
         console.log("Data was submitted");
-        // Validate fields of the form
         // Set the state of the search
         dispatch(setSearchParams(formData));
         // Fetch the values
-        // Navigate to the results page...
-        navigate("/results");
+        const request : SearchFlightsRequest = {
+            departureAirport: formData.departureAirport ? formData.departureAirport.iataCode : "",
+            arrivalAirport: formData.arrivalAirport ? formData.arrivalAirport.iataCode : "",
+            departureDate: formData.departureDate,
+            returnDate: formData.returnDate,
+            nonStop: formData.nonStop,
+            adults: formData.adults,
+            currency: formData.currency,
+            page: 1
+        }
+        dispatch(fetchFlightOffers(request));
+        
     }
+
+    useEffect(() => {
+        if(meta !== null) {
+            // Navigate to the results page...
+            navigate("/results");
+        }
+    },[meta])
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const {name, type, value, checked} = e.target as HTMLInputElement;
@@ -175,11 +194,19 @@ export default function FlightSearchForm() {
                     <div className="flex justify-end">
                         <button
                             onClick={handleSubmit}
-                            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-500"
+                            className="flex flex-row px-6 py-2 bg-green-600 text-white rounded hover:bg-green-500 disabled:bg-gray-600"
+                            disabled={loading}
                         >
                             Search
                         </button>
                     </div>
+                    {
+                        loading ? (
+                            <div className="flex justify-end">
+                                <LoadingSpinner size={16} className="mx-2"/> Fetching data...
+                            </div>
+                        ) : (<></>)
+                    }
                 </div>
             </form>
         </div>

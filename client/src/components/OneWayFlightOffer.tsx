@@ -1,10 +1,9 @@
 // OneWayFlightOffer Component
-import React from 'react'
 import FlightSchedule from './FlightSchedule'
 
 export default function OneWayFlightOffer() {
   return (
-    <div className='flex flex-row w-full max-w-screen-lg justify-between mx-auto border rounded-md'>
+    <div className='flex flex-row w-full max-w-screen-md justify-between mx-auto border rounded-md'>
         <div className='flex flex-col w-3/4'>
             <FlightSchedule />
         </div>
