@@ -5,6 +5,8 @@ import { SearchState } from "../types/searchParamsTypes";
 import { setSearchParams } from "../store/slices/searchParamsSlice";
 import { useNavigate } from "react-router-dom";
 import { getToday, stringToDate } from "../utils/dateUtils";
+import AirportSearch from "./AirportSearch";
+import { Airport } from "../types/airportTypes";
 
 type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'page'> & {
     departureDate: string;
@@ -19,8 +21,8 @@ export default function FlightSearchForm() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState<FlightSearchFields>({
-        departureCode: '',
-        arrivalCode: '',
+        departureAirport: null,
+        arrivalAirport: null,
         departureDate: '',
         returnDate: null,
         adults: 1,
@@ -29,13 +31,13 @@ export default function FlightSearchForm() {
     });
 
     const validate = (): string | null => {
-        const { departureCode, arrivalCode, departureDate, returnDate, adults } = formData;
+        const { departureAirport, arrivalAirport, departureDate, returnDate, adults } = formData;
     
         // Validate Airport Codes
-        if (!departureCode || !arrivalCode || departureCode.length !== 3 || arrivalCode.length !== 3) {
+        if (departureAirport === null || arrivalAirport ===  null || departureAirport.iataCode.length !== 3 || departureAirport.iataCode.length !== 3) {
             return "Invalid Airport Code...";
         }
-        if (departureCode === arrivalCode) {
+        if (departureAirport.iataCode === arrivalAirport.iataCode) {
             return "Arrival Code and Departure Code must be different";
         }
     
@@ -89,25 +91,28 @@ export default function FlightSearchForm() {
                 className="max-w-lg mx-auto mt-10"
             >
                 <div className="flex flex-col space-y-2">
+                    {/* It should be <AirportSearch /> for Departure Code */}
                     <div className="flex items-center justify-between space-x-3">
                         <label className="text-right w-1/3">Departure Code</label>
-                        <input
-                            name="departureCode"
-                            type="text"
-                            value={formData.departureCode}
-                            onChange={handleInputChange}
-                            className="w-2/3 p-2 border border-gray-300 rounded"
-                        />
+                        <div className="w-2/3">
+                            <AirportSearch
+                                value={formData.departureAirport}
+                                onChange={(airport:  Airport | null) => setFormData((prev) => ({ ...prev, departureAirport: airport }))}
+                                placeholder="Search departure airport..."
+                            />
+                        </div>
                     </div>
+                    
+                    {/* It should be <AirportSearch /> for Arrival Code */}
                     <div className="flex items-center justify-between space-x-3">
                         <label className="text-right w-1/3">Arrival Code</label>
-                        <input
-                            name="arrivalCode"
-                            type="text"
-                            value={formData.arrivalCode}
-                            onChange={handleInputChange}
-                            className="w-2/3 p-2 border border-gray-300 rounded"
-                        />
+                        <div className="w-2/3">
+                            <AirportSearch
+                                value={formData.arrivalAirport}
+                                onChange={(airport:  Airport | null) => setFormData((prev) => ({ ...prev, arrivalAirport: airport }))}
+                                placeholder="Search arrival airport..."
+                            />
+                        </div>
                     </div>
                     <div className="flex items-center justify-between space-x-3">
                         <label className="text-right w-1/3">Departure Date</label>

@@ -3,9 +3,9 @@ import { SearchState } from "../../types/searchParamsTypes";
 
 
 const initialState : SearchState = {
-    departureCode: '',
-    arrivalCode: '',
-    departureDate: '',
+    departureAirport: null,
+    arrivalAirport: null,
+    departureDate: null,
     adults: 1,
     currency: 'USD',
     nonStop: false,
