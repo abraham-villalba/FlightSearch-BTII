@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAirports } from "../store/slices/airportSlice";
 import { AppDispatch, RootState } from "../store/store";
 import { Airport } from "../types/airportTypes";
+import LoadingSpinner from "./LoadingSpinner";
 
 type Props = {
     value: Airport | null;
@@ -53,8 +54,8 @@ export default function AirportSearch({ value, onChange, placeholder }: Props) {
             {query && (
                 <ul className="absolute w-full bg-white border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto shadow-lg max-w-lg">
                     {loading ? (
-                        <li className="p-2 text-gray-500">
-                            Loading...
+                        <li className="flex flex-row p-2 text-gray-500">
+                            <LoadingSpinner size={20} className="mx-2"/> Loading...
                         </li>
                     ) : error !== null ? (
                         <li className="p-2 text-gray-500">Unable to fetch airport information, try again later...</li>
