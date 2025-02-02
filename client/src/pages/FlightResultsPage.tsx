@@ -3,11 +3,19 @@ import { AppDispatch, RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import OneWayFlightOffer from "../components/OneWayFlightOffer";
 import TwoWayFlightOffer from "../components/TwoWayFlightOffer";
+import { clearFlights } from "../store/slices/flightsSlice";
+import PaginationBar from "../components/PaginationBar";
 
 export default function FlightResultsPage() {
     const dispatch = useDispatch<AppDispatch>();
     const searchParams = useSelector((state: RootState) => state.searchParams);
     const { meta, offers, loading, dictionaries, error } = useSelector((state: RootState) => state.flights);
+
+    const goBack = () => {
+        console.log("Go back?")
+        dispatch(clearFlights());
+        navigate("/");
+    }
 
     const navigate = useNavigate();
 
@@ -17,8 +25,8 @@ export default function FlightResultsPage() {
             { meta !== null && meta.currentPayloadCount > 0 ? (
                 offers.map((offer) => (
                     offer.itineraries.length > 1 ? (
-                        <div className="my-2">
-                            <TwoWayFlightOffer key={offer.id} 
+                        <div className="my-2" key={offer.id} >
+                            <TwoWayFlightOffer
                                 flightOffer={offer} 
                                 referenceData={dictionaries} 
                                 arrivalAirport={searchParams.arrivalAirport} 
@@ -27,9 +35,8 @@ export default function FlightResultsPage() {
                         </div>
                         
                     ) : (
-                        <div className="my-2">
+                        <div className="my-2" key={offer.id} >
                             <OneWayFlightOffer 
-                                key={offer.id} 
                                 flightOffer={offer} 
                                 referenceData={dictionaries} 
                                 arrivalAirport={searchParams.arrivalAirport} 
@@ -41,7 +48,8 @@ export default function FlightResultsPage() {
             ) : (
                 <p className="p-2 text-gray-500">No results were found...</p>
             )}
-            <button onClick={() => {navigate("/")}} className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded">Go Back to search</button>
+            <button onClick={goBack} className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded">Go Back to search</button>
+            <PaginationBar />
         </div>
     )
 }

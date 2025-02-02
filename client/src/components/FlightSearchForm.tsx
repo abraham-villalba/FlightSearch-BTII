@@ -10,7 +10,7 @@ import { Airport } from "../types/airportTypes";
 import { fetchFlightOffers } from "../store/slices/flightsSlice";
 import LoadingSpinner from "./LoadingSpinner";
 
-type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'page'> & {
+type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'page' | 'sort'> & {
     departureDate: string;
     returnDate: string | null;
 }
@@ -74,24 +74,20 @@ export default function FlightSearchForm() {
         // Set the state of the search
         dispatch(setSearchParams(formData));
         // Fetch the values
-        const request : SearchFlightsRequest = {
-            departureAirport: formData.departureAirport ? formData.departureAirport.iataCode : "",
-            arrivalAirport: formData.arrivalAirport ? formData.arrivalAirport.iataCode : "",
-            departureDate: formData.departureDate,
-            returnDate: formData.returnDate,
-            nonStop: formData.nonStop,
-            adults: formData.adults,
-            currency: formData.currency,
-            page: 1
-        }
-        dispatch(fetchFlightOffers(request));
+        dispatch(fetchFlightOffers());
         
     }
 
     useEffect(() => {
         if(meta !== null) {
+            if(meta.currentPayloadCount > 0) {
+                navigate("/results");
+                return;
+            } else {
+                // Open modal or notify the user...
+            }
             // Navigate to the results page...
-            navigate("/results");
+            
         }
     },[meta])
 

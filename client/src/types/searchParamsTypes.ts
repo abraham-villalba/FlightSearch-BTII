@@ -9,12 +9,19 @@ export type SearchState = {
     currency: 'USD' | 'MXN' | 'EUR';
     nonStop: boolean;
     page: number;
+    sort: Sort[]
 }
 
-export type SearchFlightsRequest = Omit<SearchState, 'departureDate' | 'returnDate' | 'departureAirport' | 'arrivalAirport'> & {
+export type Sort = {
+    field: string;
+    asc: boolean;
+}
+
+export type SearchFlightsRequest = Omit<SearchState, 'departureDate' | 'returnDate' | 'departureAirport' | 'arrivalAirport' | 'sort'> & {
     departureAirport: string;
     arrivalAirport: string;
     departureDate: string;
     returnDate: string | null;
+    sort: string;
 }
 

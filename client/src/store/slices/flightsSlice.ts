@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { FlightsState } from "../../types/flightTypes";
-import { SearchFlightsRequest } from "../../types/searchParamsTypes";
+import { SearchFlightsRequest, Sort } from "../../types/searchParamsTypes";
 import { searchFlights } from "../../api/flightApis";
+import { RootState } from "../store";
+import { localDateToString } from "../../utils/dateUtils";
 
 const initialState: FlightsState = {
     offers: [],
@@ -13,8 +15,22 @@ const initialState: FlightsState = {
 
 export const fetchFlightOffers = createAsyncThunk(
     "flights/fetchFlightOffers",
-    async (searchParams: SearchFlightsRequest, { rejectWithValue }) => {
+    async (_, thunkApi) => {
         try {
+            const state = thunkApi.getState() as RootState;
+            const searchParamsState = state.searchParams;
+            const sort = searchParamsState.sort.map((item: Sort) => `${item.field}:${item.asc ? "asc" : "desc"},`).join("").slice(0,-1);
+            const searchParams : SearchFlightsRequest = {
+                departureAirport: searchParamsState.departureAirport ? searchParamsState.departureAirport.iataCode : "",
+                arrivalAirport: searchParamsState.arrivalAirport ? searchParamsState.arrivalAirport.iataCode : "",
+                departureDate: searchParamsState.departureDate ? localDateToString(searchParamsState.departureDate) : "",
+                returnDate: searchParamsState.returnDate ? localDateToString(searchParamsState.returnDate) : "",
+                nonStop: searchParamsState.nonStop,
+                adults: searchParamsState.adults,
+                currency: searchParamsState.currency,
+                page: searchParamsState.page,
+                sort: sort
+            }
             const response = await searchFlights(searchParams);
             console.log(response);
             //console.log(response.data);
@@ -22,7 +38,7 @@ export const fetchFlightOffers = createAsyncThunk(
         } catch (error: any) {
             console.log(error);
             console.log("Error fetching in thunk detected..")
-            return rejectWithValue({message: "Error fetching airports"});
+            return thunkApi.rejectWithValue({message: "Error fetching airports"});
         }
     }
 );
@@ -30,7 +46,15 @@ export const fetchFlightOffers = createAsyncThunk(
 const flightSlice = createSlice({
     name: "flights",
     initialState,
-    reducers: {},
+    reducers: {
+        clearFlights(state) {
+            state.offers = [];
+            state.meta = null;
+            state.dictionaries = null;
+            state.loading = false;
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchFlightOffers.pending, (state) => {
@@ -50,4 +74,5 @@ const flightSlice = createSlice({
     }
 });
 
+export const { clearFlights } = flightSlice.actions;
 export default flightSlice.reducer;
