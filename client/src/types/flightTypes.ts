@@ -21,11 +21,15 @@ export type Segment = {
     arrival: AirportInfo;
     carrierCode: string;
     duration: string;
-    operating: string | null;
+    operating: OperatingCarrier | null;
     aircraft: Aircraft;
     numberOfStops: number;
     number: string;
 };
+
+export type OperatingCarrier = {
+    carrierCode: string;
+}
 
 export type Layover = {
     iataCode: string;

@@ -1,38 +1,79 @@
+import { Airport } from "../types/airportTypes";
+import { Dictionary, Itinerary } from "../types/flightTypes"
+import { getTimeFromDate, parseISODuration } from "../utils/dateUtils";
 
 type FlightScheduleProps = {
-
+    itinerary: Itinerary,
+    referenceData: Dictionary | null,
+    searchParams: { departureAirport: Airport | null; arrivalAirport: Airport | null };
 }
 
-export default function FlightSchedule() {
-  return (
-    <div className='w-full'>
-        <div className='flex flex-col p-8'>
-            {/* General Time */}
-            <div className='flex flex-row justify-between'>
-                <p className='w-3/4'>1:40pm - 10:37pm</p>
-                <span className='block'></span>
-            </div>
-            {/* Main Flight info */}
-            <div className='flex flex-row justify-between'>
-                {/* From - To */}
-                <p className='w-2/3'>San Francisco (SFO) - New York (JFK)</p>
-                {/* Duration + number of stops */}
-                <p className='w-1/3'>8h 17m (1 stop)</p>
-            </div>
-            {/* Layovers info */}
-            <div className='flex flex-row justify-between'>
-                {/* Space to align */}
-                <div className='w-2/3'></div>
-                {/* Layover info */}
-                <div className='w-1/3'>
-                    <p>1h 3m in LAX</p>
+export default function FlightSchedule({itinerary, referenceData, searchParams} : FlightScheduleProps) {
+    
+    const departureTime = getTimeFromDate(itinerary.departureTime);
+    const arrivalTime = getTimeFromDate(itinerary.arrivalTime);
+    const duration = parseISODuration(itinerary.duration);
+    const layovers = itinerary.layovers;
+
+    const carrier = itinerary.segments[0]?.carrierCode;
+    const carrierName = referenceData?.carriers?.[carrier] || "Unknown Carrier";
+
+    const depIataCode = itinerary.segments[0]?.departure?.iataCode;
+    const arrIataCode = itinerary.segments[itinerary.segments.length - 1]?.arrival?.iataCode;
+    const depName = searchParams.departureAirport?.iataCode === depIataCode 
+        ? searchParams.departureAirport.name 
+        : searchParams.departureAirport?.address.cityName || "";
+    const arrName = searchParams.arrivalAirport?.iataCode === arrIataCode 
+        ? searchParams.arrivalAirport.name 
+        : searchParams.arrivalAirport?.address.cityName || "";
+
+    //const operatingCode = itinerary.segments.length > 0 && ? itinerary.segments[0].operating?.carrierCode : null;
+    const operatingCarriers = [
+        ...new Set(itinerary.segments.map((segment) => segment.operating?.carrierCode || segment.carrierCode).filter(Boolean)),
+    ];
+
+    return (
+        <div className='w-full'>
+            <div className='flex flex-col p-8'>
+                {/* General Time */}
+                <div className='flex flex-row justify-between'>
+                    <p className='w-3/4'>{departureTime} - {arrivalTime}</p>
+                    <span className='block'></span>
                 </div>
-            </div>
-            {/* Carrier information */}
-            <div className='mt-4'>
-                <p>Aeromexico (AM)</p>
+                {/* Main Flight info */}
+                <div className="flex flex-row justify-between">
+                    <p className="w-2/3">{`${depName} (${depIataCode}) - ${arrName} (${arrIataCode})`}</p>
+                    <p className="w-1/3 pl-3">{`${duration} (${layovers.length} stop${layovers.length === 1 ? "" : "s"})`}</p>
+                </div>
+                {/* Layovers info */}
+                { layovers.length > 0 && (
+                    layovers.map((layover) => (
+                        <div key={layover.iataCode} className='flex flex-row justify-between'>
+                            {/* Space to align */}
+                            <div className='w-2/3'></div>
+                            {/* Layover info */}
+                            <div className='w-1/3 pl-3'>
+                                <p>{`${parseISODuration(layover.duration)} in ${layover.iataCode}`}</p>
+                            </div>
+                        </div>
+                    ))
+                )}
+                {/* Carrier information */}
+                <div className='mt-4'>
+                    <p>{`${carrierName} (${carrier})`}</p>
+                </div>
+
+                {/* Operating Carrier Information */}
+                {operatingCarriers.length > 0 && (
+                    <div className="mt-4">
+                        {operatingCarriers.map((opCode) =>
+                        opCode !== carrier ? (
+                            <p key={opCode}>{`${referenceData?.carriers?.[opCode] || ""} (${opCode})`} <span className="text-xs">Operating carrier</span></p>
+                        ) : null
+                        )}
+                    </div>
+                )}
             </div>
         </div>
-    </div>
-  )
+    )
 }

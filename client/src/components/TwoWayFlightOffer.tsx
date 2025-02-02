@@ -1,5 +1,10 @@
 // TwoWayFlightOffer Component
+import { FlightData } from '../types/flightTypes'
 import FlightSchedule from './FlightSchedule'
+
+type TwoWayFlightOfferProps = {
+    flightOffer: FlightData
+}
 
 export default function TwoWayFlightOffer() {
   return (
