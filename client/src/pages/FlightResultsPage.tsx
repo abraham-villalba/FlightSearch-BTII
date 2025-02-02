@@ -17,16 +17,25 @@ export default function FlightResultsPage() {
             { meta !== null && meta.currentPayloadCount > 0 ? (
                 offers.map((offer) => (
                     offer.itineraries.length > 1 ? (
-                        // <TwoWayFlightOffer key={offer.id} />
-                        <p key={offer.id}>Work in progress...</p>
+                        <div className="my-2">
+                            <TwoWayFlightOffer key={offer.id} 
+                                flightOffer={offer} 
+                                referenceData={dictionaries} 
+                                arrivalAirport={searchParams.arrivalAirport} 
+                                departureAirport={searchParams.departureAirport}
+                            />
+                        </div>
+                        
                     ) : (
-                        <OneWayFlightOffer 
-                            key={offer.id} 
-                            flightOffer={offer} 
-                            referenceData={dictionaries} 
-                            arrivalAirport={searchParams.arrivalAirport} 
-                            departureAirport={searchParams.departureAirport}
-                        />
+                        <div className="my-2">
+                            <OneWayFlightOffer 
+                                key={offer.id} 
+                                flightOffer={offer} 
+                                referenceData={dictionaries} 
+                                arrivalAirport={searchParams.arrivalAirport} 
+                                departureAirport={searchParams.departureAirport}
+                            />
+                        </div>
                     )
                 ))
             ) : (
