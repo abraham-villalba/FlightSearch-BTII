@@ -26,8 +26,7 @@ export default function TwoWayFlightOffer({flightOffer, referenceData, departure
     };
 
     return (
-        <div className='flex flex-row w-full max-w-screen-md justify-between mx-auto border rounded-md'>
-            
+        <div className='flex flex-row w-full max-w-screen-md justify-between mx-auto border border-gray-300 rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-300'>
             <div className='flex flex-col w-3/4'>
                 { flightOffer.itineraries.length === 2 && (
                     flightOffer.itineraries.map((itinerary, index) => (
@@ -52,14 +51,14 @@ export default function TwoWayFlightOffer({flightOffer, referenceData, departure
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col justify-center p-8 text-end w-1/4 border-l'>
+            <div className='flex flex-col justify-center p-8 text-end w-1/4 border-l bg-gray-50 rounded-r-lg'>
                 <div>
-                    <p>{`${currency === 'EUR' ? '€' : '$'}${totalPrice} ${currency}`}</p>
-                    <p className='text-sm'>total</p>
+                    <p className='text-xl font-bold text-gray-800'>{`${currency === 'EUR' ? '€' : '$'}${totalPrice} ${currency}`}</p>
+                    <p className='text-sm text-gray-500'>Total</p>
                 </div>
-                <div>
-                    <p>{`${currency === 'EUR' ? '€' : '$'}${travelerPrice} ${currency}`}</p>
-                    <p className='text-sm'>per Traveler</p>
+                <div className='mt-2'>
+                    <p className='text-lg font-semibold text-gray-700'>{`${currency === 'EUR' ? '€' : '$'}${travelerPrice} ${currency}`}</p>
+                    <p className='text-sm text-gray-500'>Per Traveler</p>
                 </div>
             </div>
         </div>

@@ -39,18 +39,20 @@ export default function FlightDetailsPage() {
     }
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-center p-10">Flight Details</h1>
+        <div className="bg-gray-50">
+            <h3 className="text-4xl font-extrabold text-center py-10 bg-blue-500 text-white">
+                Flight Details
+            </h3>
             <div className="max-w-screen-lg mx-auto py-3">
-                <button className="bg-red-300 px-3 py-2 rounded-md"
+                <button className="bg-amber-400 hover:bg-amber-300 text-sm text-white px-4 py-2 rounded-md shadow-md"
                     onClick={onReturn}
                 >
                     {'<'} Return to Offers
                 </button>
             </div>
-            <div className='flex flex-row w-full max-w-screen-lg justify-between mx-auto rounded-md gap-x-4'>
+            <div className='flex flex-col md:flex-row w-full max-w-screen-lg justify-between mx-auto rounded-md gap-x-4'>
                 {/* Segments data */}
-                <div className="flex flex-col w-2/3 gap-y-4">
+                <div className="flex flex-col w-full md:w-2/3 gap-y-4">
                     {flight.itineraries.map((itinerary, itineraryIndex) =>
                         itinerary.segments.map((segment, segmentIndex) => (
                             <SegmentDetails 
@@ -66,7 +68,7 @@ export default function FlightDetailsPage() {
                 </div>
 
                 {/* Price Breakdown */}
-                <div className="w-1/3">
+                <div className="w-full md:w-1/3 mt-4 md:mt-0">
                     <PriceBreakdownDetails 
                         generalPrice={flight.price}
                         travelerPrice={flight.travelerPricings[0].price}
@@ -74,7 +76,6 @@ export default function FlightDetailsPage() {
                         numTravelers={flight.travelerPricings.length}
                     />
                 </div>
-                
             </div>
         </div>
     )
