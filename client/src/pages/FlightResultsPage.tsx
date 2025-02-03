@@ -11,13 +11,17 @@ export default function FlightResultsPage() {
     const searchParams = useSelector((state: RootState) => state.searchParams);
     const { meta, offers, loading, dictionaries, error } = useSelector((state: RootState) => state.flights);
 
+    const navigate = useNavigate();
+
     const goBack = () => {
         console.log("Go back?")
         dispatch(clearFlights());
         navigate("/");
     }
 
-    const navigate = useNavigate();
+    const navigateToDetails = (flightId: string) => {
+        navigate(`/results/${flightId}`);
+    }
 
     return (
         <div>
@@ -41,6 +45,7 @@ export default function FlightResultsPage() {
                                 referenceData={dictionaries} 
                                 arrivalAirport={searchParams.arrivalAirport} 
                                 departureAirport={searchParams.departureAirport}
+                                onDetailsClick={navigateToDetails}
                             />
                         </div>
                     )

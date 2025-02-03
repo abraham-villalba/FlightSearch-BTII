@@ -10,8 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<FlightSearchPage />}></Route>
         <Route path="/results" element={<FlightResultsPage />}></Route>
-        {/* Should path include something about the offer? Id? */}
-        <Route path="/results/details" element={<FlightDetailsPage />}></Route>
+        <Route path="/results/:flightId" element={<FlightDetailsPage />}></Route>
       </Routes>
     </Router>
   )

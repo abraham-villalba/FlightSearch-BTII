@@ -23,7 +23,7 @@ export default function AirportSearch({ value, onChange, placeholder }: Props) {
             if (query.trim()) {
                 dispatch(fetchAirports(query));
             }
-        }, 500); // 500ms delay
+        }, 700); // 700ms delay
 
         // Clear timeout if the user types again
         return () => clearTimeout(delay);
