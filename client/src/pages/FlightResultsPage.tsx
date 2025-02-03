@@ -6,16 +6,16 @@ import TwoWayFlightOffer from "../components/TwoWayFlightOffer";
 import { clearFlights } from "../store/slices/flightsSlice";
 import PaginationBar from "../components/PaginationBar";
 import SortToggle from "../components/SortToggle";
+import FeedbackModal from "../components/FeedbackModal";
 
 export default function FlightResultsPage() {
     const dispatch = useDispatch<AppDispatch>();
     const searchParams = useSelector((state: RootState) => state.searchParams);
-    const { meta, offers, loading, dictionaries, error } = useSelector((state: RootState) => state.flights);
+    const { meta, offers, dictionaries } = useSelector((state: RootState) => state.flights);
 
     const navigate = useNavigate();
 
     const goBack = () => {
-        console.log("Go back?")
         dispatch(clearFlights());
         navigate("/");
     }
@@ -78,6 +78,7 @@ export default function FlightResultsPage() {
                 <p className="p-2 text-gray-500">No results were found...</p>
             )}
             <PaginationBar />
+            <FeedbackModal />
         </div>
     )
 }

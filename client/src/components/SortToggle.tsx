@@ -26,7 +26,7 @@ export default function SortToggle({field, disabled} : SortToggleProps) {
     }
 
     return (
-        <label className="inline-flex items-center cursor-pointer">
+        <label className="inline-flex items-center cursor-pointer disabled:cursor-not-allowed">
             <input 
                 type="checkbox" 
                 className="sr-only peer" 
