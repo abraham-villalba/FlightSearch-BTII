@@ -35,6 +35,7 @@ export default function FlightResultsPage() {
                                 referenceData={dictionaries} 
                                 arrivalAirport={searchParams.arrivalAirport} 
                                 departureAirport={searchParams.departureAirport}
+                                onDetailsClick={navigateToDetails}
                             />
                         </div>
                         

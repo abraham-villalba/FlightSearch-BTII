@@ -34,7 +34,7 @@ export default function FlightSchedule({itinerary, referenceData, searchParams} 
 
     return (
         <div className='w-full'>
-            <div className='flex flex-col p-8'>
+            <div className='flex flex-col px-8 pt-4'>
                 {/* General Time */}
                 <div className='flex flex-row justify-between'>
                     <p className='w-3/4'>{departureTime} - {arrivalTime}</p>
