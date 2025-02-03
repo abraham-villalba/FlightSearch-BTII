@@ -17,6 +17,7 @@ export default function PaginationBar() {
         if (page !== currentPage) {
             dispatch(setPage(page))
             dispatch(fetchFlightOffers())
+            window.scrollTo({top:0, behavior: "smooth"})
         }
     }
 
@@ -24,6 +25,7 @@ export default function PaginationBar() {
         if(!isPreviousDisabled()) {
             dispatch(setPage(currentPage - 1))
             dispatch(fetchFlightOffers())
+            window.scrollTo({top:0, behavior: "smooth"})
         }
     }
 
@@ -31,17 +33,20 @@ export default function PaginationBar() {
         if(!(currentPage === totalPages)) {
             dispatch(setPage(currentPage + 1))
             dispatch(fetchFlightOffers())
+            window.scrollTo({top:0, behavior: "smooth"})
         }
     }
 
     const handleFirstClick = () => {
         dispatch(setPage(1))
         dispatch(fetchFlightOffers())
+        window.scrollTo({top:0, behavior: "smooth"})
     }
 
     const handleLastClick = () => {
         dispatch(setPage(totalPages))
         dispatch(fetchFlightOffers())
+        window.scrollTo({top:0, behavior: "smooth"})
     }
 
     const getPageRange = (current: number, totalPages: number): number[] => {

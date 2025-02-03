@@ -19,7 +19,7 @@ export const fetchFlightOffers = createAsyncThunk(
         try {
             const state = thunkApi.getState() as RootState;
             const searchParamsState = state.searchParams;
-            const sort = searchParamsState.sort.map((item: Sort) => `${item.field}:${item.asc ? "asc" : "desc"},`).join("").slice(0,-1);
+            const sort = searchParamsState.sort.map((item: Sort) => `${item.field}:${"asc"},`).join("").slice(0,-1);
             const searchParams : SearchFlightsRequest = {
                 departureAirport: searchParamsState.departureAirport ? searchParamsState.departureAirport.iataCode : "",
                 arrivalAirport: searchParamsState.arrivalAirport ? searchParamsState.arrivalAirport.iataCode : "",

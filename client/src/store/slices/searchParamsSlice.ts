@@ -32,8 +32,15 @@ const searchParamsSlice = createSlice({
             const exists = state.sort.some((item) => item.field === field);
             state.sort = exists ? sortBy : [...sortBy, {field, asc: true}];
         },
+        removeSortBy(state, action: PayloadAction<string>) {
+            const field = action.payload;
+            const sortBy = state.sort.filter((item) => 
+                item.field !== field 
+            );
+            state.sort = sortBy;
+        }
     }
 });
 
-export const {setSearchParams, setPage, addSortBy} = searchParamsSlice.actions;
+export const {setSearchParams, setPage, addSortBy, removeSortBy} = searchParamsSlice.actions;
 export default searchParamsSlice.reducer;
