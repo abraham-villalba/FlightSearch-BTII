@@ -4,6 +4,7 @@ import { RootState } from "../store/store";
 import SegmentDetails from "../components/SegmentDetails";
 import PriceBreakdownDetails from "../components/PriceBreakdownDetails";
 import { Dictionary } from "../types/flightTypes";
+import { parseISODuration } from "../utils/dateUtils";
 
 
 export default function FlightDetailsPage() {
@@ -53,18 +54,29 @@ export default function FlightDetailsPage() {
             <div className='flex flex-col md:flex-row w-full max-w-screen-lg justify-between mx-auto rounded-md gap-x-4'>
                 {/* Segments data */}
                 <div className="flex flex-col w-full md:w-2/3 gap-y-4">
-                    {flight.itineraries.map((itinerary, itineraryIndex) =>
-                        itinerary.segments.map((segment, segmentIndex) => (
-                            <SegmentDetails 
-                                key={`${itineraryIndex}-${segmentIndex}`} 
-                                id={segmentIndex + 1}
-                                segment={segment}
-                                glossary={referenceData}
-                                returnFlight={itineraryIndex === 1} // If itineraryIndex is 1, it's a return flight
-                                fareDetails={flight.travelerPricings[0].fareDetailsBySegment[segmentIndex]}
-                            />
-                        ))
-                    )}
+                    {flight.itineraries.map((itinerary, itineraryIndex) => 
+                        itinerary.segments.map((segment, segmentIndex) => {
+                            return (
+                                <div>
+                                    <SegmentDetails 
+                                        key={`${itineraryIndex}-${segmentIndex}`} 
+                                        id={segmentIndex + 1}
+                                        segment={segment}
+                                        glossary={referenceData}
+                                        returnFlight={itineraryIndex === 1} // If itineraryIndex is 1, it's a return flight
+                                        fareDetails={flight.travelerPricings[0].fareDetailsBySegment[segmentIndex]}
+                                    />
+                                    {/* Render Layover Information */}
+                                    {itinerary.layovers.filter(layover => layover.iataCode === segment.arrival.iataCode).map((filteredLayover) => (
+                                        <div key={filteredLayover.iataCode} className="layover-info">
+                                            <p className="ml-3">{`Layover: ${parseISODuration(filteredLayover.duration)} in ${filteredLayover.iataCode}`}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )
+                            
+                            
+                    }))}
                 </div>
 
                 {/* Price Breakdown */}

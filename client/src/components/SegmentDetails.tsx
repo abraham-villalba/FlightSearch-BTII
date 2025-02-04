@@ -1,4 +1,5 @@
 import { Dictionary, FareDetails, Segment } from "../types/flightTypes";
+import { parseISODuration } from "../utils/dateUtils";
 import TravelersFareDetails from "./TravelersFareDetails";
 
 type SegmentDetailsProps = {
@@ -15,6 +16,7 @@ export default function SegmentDetails({id, segment, glossary, returnFlight, far
             <div className="flex flex-col w-2/3 space-y-3">
                 <p className="text-lg font-semibold">{`Segment ${id} (${returnFlight ? 'Return Flight' : 'Outbound Flight'})`}</p>
                 <p>{segment.departure.at} - {segment.arrival.at}</p>
+                <p>{`Duration: ${parseISODuration(segment.duration)}`}</p>
                 <p>Airport name ({segment.departure.iataCode}) - Airport name ({segment.arrival.iataCode})</p>
                 <p>{`${glossary.carriers[segment.carrierCode]} (${segment.carrierCode})`}</p>
                 <p>{`Flight number: ${segment.number}`}</p>
