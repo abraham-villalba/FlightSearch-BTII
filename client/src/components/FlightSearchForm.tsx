@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../store/store";
 import { ChangeEvent, useEffect, useState } from "react";
-import { SearchFlightsRequest, SearchState } from "../types/searchParamsTypes";
+import { SearchState } from "../types/searchParamsTypes";
 import { setSearchParams } from "../store/slices/searchParamsSlice";
 import { useNavigate } from "react-router-dom";
 import { getToday, stringToDate } from "../utils/dateUtils";
@@ -18,7 +18,7 @@ type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'pa
 export default function FlightSearchForm() {
     
     const dispatch = useDispatch<AppDispatch>();
-    const { meta, loading, error } = useSelector((state: RootState) => state.flights);
+    const { meta, loading } = useSelector((state: RootState) => state.flights);
 
     const navigate = useNavigate();
 
