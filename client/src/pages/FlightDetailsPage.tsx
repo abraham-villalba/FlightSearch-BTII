@@ -20,6 +20,7 @@ export default function FlightDetailsPage() {
         locations: {}
     }
     const referenceData = useSelector((state: RootState) => state.flights.dictionaries) || defaultDictionary;
+    const {departureAirport, arrivalAirport} = useSelector((state: RootState) => state.searchParams);
 
     if (!flight) {
         return <div>Flight offer not found...</div>
@@ -57,14 +58,14 @@ export default function FlightDetailsPage() {
                     {flight.itineraries.map((itinerary, itineraryIndex) => 
                         itinerary.segments.map((segment, segmentIndex) => {
                             return (
-                                <div>
+                                <div key={`${itineraryIndex}-${segmentIndex}`} >
                                     <SegmentDetails 
-                                        key={`${itineraryIndex}-${segmentIndex}`} 
                                         id={segmentIndex + 1}
                                         segment={segment}
                                         glossary={referenceData}
                                         returnFlight={itineraryIndex === 1} // If itineraryIndex is 1, it's a return flight
                                         fareDetails={flight.travelerPricings[0].fareDetailsBySegment[segmentIndex]}
+                                        airports={{departure: departureAirport, arrival: arrivalAirport}}
                                     />
                                     {/* Render Layover Information */}
                                     {itinerary.layovers.filter(layover => layover.iataCode === segment.arrival.iataCode).map((filteredLayover) => (

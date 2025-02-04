@@ -18,7 +18,6 @@ type FlightSearchFields = Omit<SearchState, 'departureDate' | 'returnDate' | 'pa
 export default function FlightSearchForm() {
     
     const dispatch = useDispatch<AppDispatch>();
-    const searchParams = useSelector((state: RootState) => state.searchParams);
     const { meta, loading, error } = useSelector((state: RootState) => state.flights);
 
     const navigate = useNavigate();

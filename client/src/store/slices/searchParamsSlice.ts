@@ -38,9 +38,19 @@ const searchParamsSlice = createSlice({
                 item.field !== field 
             );
             state.sort = sortBy;
+        },
+        resetSearchParams(state) {
+            state.departureAirport = null,
+            state.arrivalAirport = null,
+            state.departureDate = null,
+            state.adults = 1,
+            state.currency = 'USD',
+            state.nonStop = false,
+            state.page = 1,
+            state.sort = []
         }
     }
 });
 
-export const {setSearchParams, setPage, addSortBy, removeSortBy} = searchParamsSlice.actions;
+export const {setSearchParams, setPage, addSortBy, removeSortBy, resetSearchParams} = searchParamsSlice.actions;
 export default searchParamsSlice.reducer;

@@ -7,6 +7,7 @@ import { clearFlights } from "../store/slices/flightsSlice";
 import PaginationBar from "../components/PaginationBar";
 import SortToggle from "../components/SortToggle";
 import FeedbackModal from "../components/FeedbackModal";
+import { resetSearchParams } from "../store/slices/searchParamsSlice";
 
 export default function FlightResultsPage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +18,7 @@ export default function FlightResultsPage() {
 
     const goBack = () => {
         dispatch(clearFlights());
+        dispatch(resetSearchParams())
         navigate("/");
     }
 

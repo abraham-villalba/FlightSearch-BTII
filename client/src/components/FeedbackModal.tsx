@@ -4,12 +4,12 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useEffect, useState } from "react";
 
 export default function FeedbackModal() {
-    const {loading, error} = useSelector((state: RootState) => state.flights);
+    const {loading, error, meta} = useSelector((state: RootState) => state.flights);
     const [isOpen, setIsOpen] = useState(!!(loading || error));
 
     useEffect(() => {
-        setIsOpen(loading || !!error);
-    }, [loading, error]);
+        setIsOpen(loading || !!error || (meta?.count === 0));
+    }, [loading, error, meta]);
 
     if (!isOpen) return null;
 
@@ -52,8 +52,10 @@ export default function FeedbackModal() {
                                 <LoadingSpinner size={40} className="mb-2" />
                                 <p className="text-center">Loading flight results...</p>
                             </div>
-                        ) : (
+                        ) : error ? (
                             <p className="text-center">{error}</p>
+                        ) : meta && meta.count === 0 && (
+                            <p className="text-center">Try again, no flights were found...</p>
                         )}
                     </div>
     
