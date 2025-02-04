@@ -43,7 +43,7 @@ public class WebClientConfig {
         // Increase the buffer size to 1MB
         ExchangeStrategies strategies = ExchangeStrategies.builder()
             .codecs(clientCodecConfigurer -> 
-                clientCodecConfigurer.defaultCodecs().maxInMemorySize(1 * 1024 * 1024) // 1MB
+                clientCodecConfigurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024) // 1MB
             )
             .build();
         
