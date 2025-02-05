@@ -30,10 +30,8 @@ export default function AirportSearch({ value, onChange, placeholder }: Props) {
     }, [query, dispatch]);
 
     useEffect(() => {
-        // Set a delay before making the API call
         if(error){
             setTimeout(() => {
-                console.log(query);
                 dispatch(clearError());
                 setQuery("");
             }, 5000); // 5s delay
