@@ -20,7 +20,7 @@ export const fetchAirports = createAsyncThunk(
             return response.data;
         } catch (error: any) {
             console.log("Error fetching in thunk detected..")
-            return rejectWithValue({message: "Error fetching airports"});
+            return rejectWithValue("Error fetching airports");
         }
     }
 );
@@ -30,7 +30,11 @@ export const fetchAirports = createAsyncThunk(
 const airportSlice = createSlice({
     name: "airports",
     initialState,
-    reducers: {},
+    reducers: {
+        clearError(state){
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchAirports.pending, (state) => {
@@ -42,9 +46,11 @@ const airportSlice = createSlice({
             })
             .addCase(fetchAirports.rejected, (state, action) => {
                 state.loading = false;
+                state.airports = [];
                 state.error = action.payload as string;
             })
     }
 });
 
+export const { clearError } = airportSlice.actions;
 export default airportSlice.reducer;
