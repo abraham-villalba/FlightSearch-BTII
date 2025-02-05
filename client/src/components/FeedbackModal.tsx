@@ -1,15 +1,27 @@
-import { useSelector } from "react-redux"
-import { RootState } from "../store/store"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "../store/store"
 import LoadingSpinner from "./LoadingSpinner";
 import { useEffect, useState } from "react";
+import { clearError } from "../store/slices/flightsSlice";
 
 export default function FeedbackModal() {
     const {loading, error, meta} = useSelector((state: RootState) => state.flights);
+    const dispatch = useDispatch<AppDispatch>();
     const [isOpen, setIsOpen] = useState(!!(loading || error));
 
     useEffect(() => {
         setIsOpen(loading || !!error || (meta?.count === 0));
     }, [loading, error, meta]);
+
+    useEffect(() => {
+        // Set a delay before making the API call
+        if(error){
+            setTimeout(() => {
+                console.log("Timer for cleaning error completed...");
+                dispatch(clearError());
+            }, 5000); // 5s delay
+        }
+    }, [error]);
 
     if (!isOpen) return null;
 
@@ -53,7 +65,11 @@ export default function FeedbackModal() {
                                 <p className="text-center">Loading flight results...</p>
                             </div>
                         ) : error ? (
-                            <p className="text-center">{error}</p>
+                            <div className="text-center">
+                                <p className="">{error}</p>
+                                <p className="text-sm">Please try again later...</p>
+                            </div>
+                            
                         ) : meta && meta.count === 0 && (
                             <p className="text-center">Try again, no flights were found...</p>
                         )}
