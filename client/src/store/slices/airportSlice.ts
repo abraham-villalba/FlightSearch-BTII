@@ -15,11 +15,9 @@ export const fetchAirports = createAsyncThunk(
     async (query: string, { rejectWithValue }) => {
         try {
             const response = await searchAirports(query);
-            console.log(response);
-            console.log(response.data);
             return response.data;
         } catch (error: any) {
-            console.log("Error fetching in thunk detected..")
+            console.log("Error fetching detected..")
             return rejectWithValue("Error fetching airports");
         }
     }

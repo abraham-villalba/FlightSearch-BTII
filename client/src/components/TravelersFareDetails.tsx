@@ -16,7 +16,7 @@ export default function TravelersFareDetails({cabin, className , amenities} : Tr
             <p><strong>Class:</strong> {className}</p>
             <p><strong>Amenities:</strong></p>
             <ul className="list-disc pl-5 space-y-1">
-                {amenities.length > 0 ? (
+                {amenities && amenities.length > 0 ? (
                     amenities.map((amenity) => (
                         <li key={amenity.description} className="text-xs">
                             <strong>{amenity.description}:</strong> 
