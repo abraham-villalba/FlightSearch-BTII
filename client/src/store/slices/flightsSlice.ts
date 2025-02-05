@@ -32,8 +32,6 @@ export const fetchFlightOffers = createAsyncThunk(
                 sort: sort
             }
             const response = await searchFlights(searchParams);
-            console.log(response);
-            //console.log(response.data);
             return response;
         } catch (error: any) {
             return thunkApi.rejectWithValue("Error searching for flights");

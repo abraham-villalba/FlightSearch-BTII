@@ -14,10 +14,8 @@ export default function FeedbackModal() {
     }, [loading, error, meta]);
 
     useEffect(() => {
-        // Set a delay before making the API call
         if(error){
             setTimeout(() => {
-                console.log("Timer for cleaning error completed...");
                 dispatch(clearError());
             }, 5000); // 5s delay
         }
