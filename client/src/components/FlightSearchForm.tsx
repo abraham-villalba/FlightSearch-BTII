@@ -47,7 +47,7 @@ export default function FlightSearchForm() {
         if (!departureDate) return "Departure date is required...";
         
         const departure = stringToDate(departureDate);
-        if (departure < getToday()) return "Departure date cannot be in the past...";
+        if (departure <= getToday()) return "Departure date cannot today or be in the past...";
     
         // Validate Return Date
         if (returnDate) {

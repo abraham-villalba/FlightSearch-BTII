@@ -11,7 +11,6 @@ export const searchAirports = async (query: string) => {
         const response = await axios.get(`${API_URL}/airports/search?query=${query}`);
         return response.data;
     } catch (error) {
-        console.log(error);
         throw error;
     }
 };

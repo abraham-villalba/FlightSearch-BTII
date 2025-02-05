@@ -15,7 +15,10 @@ const buildSearchQuery = (params: SearchFlightsRequest): string => {
 }  
 
 export const searchFlights = async (params: SearchFlightsRequest) => {
-    console.log(`Calling GET ${API_URL}/flights/search${buildSearchQuery(params)}`);
-    const response = await axios.get(`${API_URL}/flights/search${buildSearchQuery(params)}`);
-    return response.data;
+    try {
+        const response = await axios.get(`${API_URL}/flights/search${buildSearchQuery(params)}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
