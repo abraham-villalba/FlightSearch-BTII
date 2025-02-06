@@ -10,7 +10,7 @@ type PriceBreakdownDetailsProps = {
     numTravelers: number
 }
 
-const formatPrice = (price: number, currency: string) : string => currency === 'EUR' ? '€' : '$' + `${price} ${currency}`;
+const formatPrice = (price: number, currency: string) : string => (currency === 'EUR' ? '€' : '$') + `${price} ${currency}`;
 
 export default function PriceBreakdownDetails({generalPrice, fees, travelerPrice, numTravelers} : PriceBreakdownDetailsProps) {
     return (
