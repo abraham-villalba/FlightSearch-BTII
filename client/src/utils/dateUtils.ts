@@ -20,6 +20,11 @@ export const getTimeFromDate = (dateString: string) : string => {
     return format(date, "HH:mm");
 }
 
+export const getMonthAndDayFromDate = (dateString: string): string => {
+    const date = parseISO(dateString);
+    return format(date, "MMMM, d");
+}
+
 export const parseISODuration = (duration: string) : string => {
     const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     if (!match) return "Invalid duration";
