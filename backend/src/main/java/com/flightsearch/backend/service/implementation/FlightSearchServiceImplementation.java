@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -15,18 +17,23 @@ import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
 import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
 import com.flightsearch.backend.model.FlightSearch.FlightOffer;
 import com.flightsearch.backend.model.FlightSearch.Itinerary;
+import com.flightsearch.backend.model.FlightSearch.Location;
+import com.flightsearch.backend.service.AirportSearchService;
 import com.flightsearch.backend.service.FlightSearchService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 public class FlightSearchServiceImplementation implements FlightSearchService{
 
     private final WebClient webClient;
+    private final AirportSearchService airportSearchService;
     private static final int PAGE_SIZE = 15;
 
-    public FlightSearchServiceImplementation(WebClient webClient) {
+    public FlightSearchServiceImplementation(WebClient webClient, AirportSearchService airportSearchService) {
         this.webClient = webClient;
+        this.airportSearchService = airportSearchService;
     }
 
     @Override
@@ -60,14 +67,17 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
                 return Mono.error(new ServerErrorException("An error has occurred on the remote server..."));
             })
             .bodyToMono(FlightSearchResponseDTO.class)
-            .map(response -> {
+            .flatMap(response -> {
+                // Sort, paginate, and process flight offers.
                 if (request.getSortBy() != null) {
                     String[] sortFields = request.getSortBy().split(",");
                     sortFlights(response.getData(), sortFields);
                 }
                 paginateFlights(response, request.getPage());
                 response.getData().forEach(FlightOffer::processFlightsDetails);
-                return response;
+
+                // Enrich the reference data locations reactively.
+                return fillReferenceDataLocations(response);
             });
     }
 
@@ -132,5 +142,27 @@ public class FlightSearchServiceImplementation implements FlightSearchService{
             response.setData(flights.subList(fromIndex, toIndex));
         }
         response.getMeta().setCurrentPayloadCount(response.getData().size());
+    }
+
+    private Mono<FlightSearchResponseDTO> fillReferenceDataLocations(FlightSearchResponseDTO response) {
+        if (response.getDictionaries() == null ||
+            response.getDictionaries().getLocations() == null ||
+            response.getDictionaries().getLocations().isEmpty()) {
+            return Mono.just(response);
+        }
+        Set<Entry<String, Location>> locationSet = response.getDictionaries().getLocations().entrySet();
+        return Flux.fromIterable(locationSet)
+            .concatMap(entry -> {
+                String dictKey = entry.getKey();
+                Location location = entry.getValue();
+                return airportSearchService.getAirport(dictKey, location)
+                    .doOnNext(airport -> {
+                        // Update the location with the airport details.
+                        location.setName(airport.getName());
+                        location.setCityName(airport.getAddress().getCityName());
+                        location.setCountryName(airport.getAddress().getCountryName());
+                    });
+            })
+            .then(Mono.just(response));
     }
 }
