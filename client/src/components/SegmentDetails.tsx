@@ -20,6 +20,7 @@ export default function SegmentDetails({id, segment, glossary, returnFlight, far
     const getAirportName = (iataCode: string, cityCode: string, countryCode: string) => {
         const findAirport = (airport: Airport | null) => {
             if (!airport) return null;
+            if (glossary.locations[iataCode].name !== "Unknown") return glossary.locations[iataCode].name; 
             if (airport.iataCode === iataCode) return airport.name;
             if (airport.address?.cityCode === cityCode) return airport.address.cityName;
             return null;

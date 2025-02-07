@@ -86,7 +86,7 @@ export type FlightData = {
 export type Dictionary = {
     aircraft: Record<string, string>;
     carriers: Record<string, string>;
-    locations: Record<string, { cityCode: string; countryCode: string }>;
+    locations: Record<string, { cityCode: string; countryCode: string, name: string, cityName: string, countryName: string }>;
 };
 
 export type SearchFlightsApiResponse = {
