@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents an Airline
+ */
 @Getter
 @Setter
 @AllArgsConstructor

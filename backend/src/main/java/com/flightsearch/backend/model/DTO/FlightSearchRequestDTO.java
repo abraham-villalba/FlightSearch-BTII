@@ -16,6 +16,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO for flight offers search endpoint request data.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

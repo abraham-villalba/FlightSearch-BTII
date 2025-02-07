@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO for Airline details response data.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

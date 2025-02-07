@@ -15,6 +15,7 @@ import com.flightsearch.backend.exceptions.ServerErrorException;
 import com.flightsearch.backend.model.DTO.FlightSearchRequestDTO;
 import com.flightsearch.backend.model.DTO.FlightSearchResponseDTO;
 import com.flightsearch.backend.model.enums.Currency;
+import com.flightsearch.backend.service.AirportSearchService;
 import com.flightsearch.backend.service.FlightSearchService;
 import com.flightsearch.backend.service.implementation.FlightSearchServiceImplementation;
 
@@ -26,6 +27,7 @@ public class FlightSearchServiceTest {
     
     private MockWebServer mockWebServer;
     private FlightSearchService flightSearchService;
+    private AirportSearchService airportSearchService;
 
     @BeforeEach
     void setUpMockServer() throws IOException {
@@ -33,7 +35,7 @@ public class FlightSearchServiceTest {
         mockWebServer.start();
         String baseUrl = mockWebServer.url("/").toString();
         WebClient webClient = WebClient.create(baseUrl);
-        flightSearchService = new FlightSearchServiceImplementation(webClient);
+        flightSearchService = new FlightSearchServiceImplementation(webClient, airportSearchService);
     }
 
     @AfterEach
