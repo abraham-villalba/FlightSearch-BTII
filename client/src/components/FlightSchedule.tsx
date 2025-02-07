@@ -24,9 +24,11 @@ export default function FlightSchedule({itinerary, referenceData, searchParams} 
     const arrIataCode = itinerary.segments[itinerary.segments.length - 1]?.arrival?.iataCode;
     const depName = searchParams.departureAirport?.iataCode === depIataCode 
         ? searchParams.departureAirport.name 
+        : referenceData?.locations[depIataCode].name !== "Unknown" ? referenceData?.locations[depIataCode].name 
         : searchParams.departureAirport?.address.cityName || "";
     const arrName = searchParams.arrivalAirport?.iataCode === arrIataCode 
         ? searchParams.arrivalAirport.name 
+        : referenceData?.locations[arrIataCode].name !== "Unknown" ? referenceData?.locations[arrIataCode].name 
         : searchParams.arrivalAirport?.address.cityName || "";
 
     //const operatingCode = itinerary.segments.length > 0 && ? itinerary.segments[0].operating?.carrierCode : null;
