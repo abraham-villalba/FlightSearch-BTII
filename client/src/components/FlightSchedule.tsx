@@ -1,6 +1,6 @@
 import { Airport } from "../types/airportTypes";
 import { Dictionary, Itinerary } from "../types/flightTypes"
-import { getTimeFromDate, parseISODuration } from "../utils/dateUtils";
+import { getMonthAndDayFromDate, getTimeFromDate, parseISODuration } from "../utils/dateUtils";
 
 type FlightScheduleProps = {
     itinerary: Itinerary,
@@ -11,7 +11,9 @@ type FlightScheduleProps = {
 export default function FlightSchedule({itinerary, referenceData, searchParams} : FlightScheduleProps) {
     
     const departureTime = getTimeFromDate(itinerary.departureTime);
+    const departureDay = getMonthAndDayFromDate(itinerary.departureTime);
     const arrivalTime = getTimeFromDate(itinerary.arrivalTime);
+    const arrivalDay = getMonthAndDayFromDate(itinerary.arrivalTime);
     const duration = parseISODuration(itinerary.duration);
     const layovers = itinerary.layovers;
 
@@ -37,7 +39,7 @@ export default function FlightSchedule({itinerary, referenceData, searchParams} 
             <div className='flex flex-col px-8 pt-4'>
                 {/* General Time */}
                 <div className="flex flex-row justify-between text-lg font-semibold text-gray-700">
-                    <p>{departureTime} - {arrivalTime}</p>
+                    <p>{departureDay} <span className="font-bold">{departureTime}</span> - {arrivalDay} <span className="font-bold">{arrivalTime}</span></p>
                 </div>
                 {/* Main Flight info */}
                 <div className="flex flex-row justify-between text-gray-600">

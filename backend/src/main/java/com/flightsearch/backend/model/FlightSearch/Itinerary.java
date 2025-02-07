@@ -25,6 +25,9 @@ public class Itinerary {
     private Duration totalLayoverDuration;
     private List<Layover> layovers = new ArrayList<>();
 
+    /**
+     * Calculates and sets layover information of a flight offer itinerary.
+     */
     public void calculateItineraryDetails() {
         if (segments != null && !segments.isEmpty()) {
             this.departureTime = segments.get(0).getDeparture().getAt();

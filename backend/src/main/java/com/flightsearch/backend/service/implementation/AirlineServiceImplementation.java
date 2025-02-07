@@ -11,6 +11,11 @@ import com.flightsearch.backend.service.AirlineService;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Service class for managing Airport information (implementation)
+ * Interacts with Amadeus API to fetch airline-related information. 
+ * This service uses WebClient to perform non-blocking HTTP requests.
+ */
 @Service
 public class AirlineServiceImplementation implements AirlineService {
     
@@ -20,6 +25,15 @@ public class AirlineServiceImplementation implements AirlineService {
         this.webClient = webClient;
     }
 
+    /**
+     * Searches for airlines included in the iataCodes string
+     *
+     * @param iataCodes string including one or more Airline codes
+     * @return a Mono of AirlineResponseDTO containing the details of the airlines.
+     * @throws IllegalArgumentException if the iataCodes string is empty.
+     * @throws ClientErrorException if a 4xx error occurs during the API request.
+     * @throws ServerErrorException if a 5xx error occurs during the API request.
+     */
     @Override
     public Mono<AirlineResponseDTO> getAirlineInformation(String iataCodes) {
         if (iataCodes.length() < 2) {

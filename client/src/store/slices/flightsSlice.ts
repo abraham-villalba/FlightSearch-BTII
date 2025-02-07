@@ -32,13 +32,9 @@ export const fetchFlightOffers = createAsyncThunk(
                 sort: sort
             }
             const response = await searchFlights(searchParams);
-            console.log(response);
-            //console.log(response.data);
             return response;
         } catch (error: any) {
-            console.log(error);
-            console.log("Error fetching in thunk detected..")
-            return thunkApi.rejectWithValue({message: "Error fetching airports"});
+            return thunkApi.rejectWithValue("Error searching for flights");
         }
     }
 );
@@ -52,6 +48,9 @@ const flightSlice = createSlice({
             state.meta = null;
             state.dictionaries = null;
             state.loading = false;
+            state.error = null;
+        },
+        clearError(state) {
             state.error = null;
         }
     },
@@ -69,10 +68,10 @@ const flightSlice = createSlice({
             .addCase(fetchFlightOffers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-                state = initialState;
+                //state = initialState;
             })
     }
 });
 
-export const { clearFlights } = flightSlice.actions;
+export const { clearFlights, clearError } = flightSlice.actions;
 export default flightSlice.reducer;

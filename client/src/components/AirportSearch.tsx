@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAirports } from "../store/slices/airportSlice";
+import { clearError, fetchAirports } from "../store/slices/airportSlice";
 import { AppDispatch, RootState } from "../store/store";
 import { Airport } from "../types/airportTypes";
 import LoadingSpinner from "./LoadingSpinner";
@@ -28,6 +28,15 @@ export default function AirportSearch({ value, onChange, placeholder }: Props) {
         // Clear timeout if the user types again
         return () => clearTimeout(delay);
     }, [query, dispatch]);
+
+    useEffect(() => {
+        if(error){
+            setTimeout(() => {
+                dispatch(clearError());
+                setQuery("");
+            }, 5000); // 5s delay
+        }
+    }, [error]);
 
     return (
         <div>

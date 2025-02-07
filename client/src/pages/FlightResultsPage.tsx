@@ -17,9 +17,9 @@ export default function FlightResultsPage() {
     const navigate = useNavigate();
 
     const goBack = () => {
-        dispatch(clearFlights());
-        dispatch(resetSearchParams())
         navigate("/");
+        dispatch(clearFlights());
+        dispatch(resetSearchParams());
     }
 
     const navigateToDetails = (flightId: string) => {
