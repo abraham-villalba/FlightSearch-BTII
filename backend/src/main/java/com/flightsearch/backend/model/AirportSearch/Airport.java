@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents an Airport in Airport Search response.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
